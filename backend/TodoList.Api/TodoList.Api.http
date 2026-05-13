@@ -9,7 +9,21 @@ POST {{TodoList.Api_HostAddress}}/api/todos
 Content-Type: application/json
 
 {
-  "title": "Try the TODO app"
+  "title": "Try the TODO app",
+  "priority": "High",
+  "dueDate": null
+}
+
+###
+
+PUT {{TodoList.Api_HostAddress}}/api/todos/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+{
+  "title": "Try the polished TODO app",
+  "isCompleted": true,
+  "priority": "Medium",
+  "dueDate": null
 }
 
 ###

@@ -23,11 +23,11 @@
 }
 
 .todo-panel {
-  width: min(100%, 42rem);
+  width: min(100%, 48rem);
   padding: 2rem;
   border: 1px solid rgba(24, 33, 47, 0.1);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 1.5rem 4rem rgba(24, 33, 47, 0.12);
 }
 
@@ -35,7 +35,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-bottom: 1.5rem;
 
   h1 {
@@ -54,20 +54,28 @@
   text-transform: uppercase;
 }
 
-.count {
-  display: inline-grid;
-  min-width: 3rem;
-  min-height: 3rem;
-  place-items: center;
-  border-radius: 999px;
-  background: #18212f;
-  color: #ffffff;
-  font-weight: 800;
+.stats {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.4rem;
+    padding: 0 0.75rem;
+    border-radius: 999px;
+    background: #18212f;
+    color: #ffffff;
+    font-size: 0.9rem;
+  }
 }
 
 .todo-form {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.75rem;
 
   label {
     font-size: 0.9rem;
@@ -77,34 +85,50 @@
 
 .todo-form__row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 1.5rem;
+  align-items: stretch;
+}
+
+.todo-form__meta {
+  display: grid;
+  grid-template-columns: 12rem 12rem;
+  gap: 1rem;
+
+  label {
+    display: grid;
+    gap: 0.4rem;
+  }
 }
 
 input,
-button {
+button,
+select {
   min-height: 2.85rem;
   border-radius: 6px;
   font: inherit;
 }
 
-input {
+input,
+select {
   width: 100%;
   border: 1px solid #b8c3cf;
   padding: 0 0.9rem;
   color: #18212f;
   background: #ffffff;
+  box-sizing: border-box;
 }
 
 input:focus-visible,
-button:focus-visible {
+button:focus-visible,
+select:focus-visible {
   outline: 3px solid rgba(38, 99, 235, 0.28);
   outline-offset: 2px;
 }
 
 button {
   border: 0;
-  padding: 0 1rem;
+  padding: 0 1.15rem;
   background: #2563eb;
   color: #ffffff;
   font-weight: 800;
@@ -116,8 +140,33 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.add-button {
+  min-width: 6rem;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+
+  button {
+    min-height: 2.35rem;
+    border: 1px solid #c8d2dd;
+    background: #ffffff;
+    color: #31506f;
+  }
+
+  .is-active {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #ffffff;
+  }
+}
+
 .message,
-.empty-state {
+.empty-state,
+.undo-message {
   margin: 1.25rem 0 0;
   color: #42607f;
 }
@@ -125,6 +174,19 @@ button:disabled {
 .message--error {
   color: #b42318;
   font-weight: 700;
+}
+
+.undo-message {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+
+  button {
+    min-height: 2rem;
+    padding: 0 0.8rem;
+    background: #31506f;
+  }
 }
 
 .todo-list {
@@ -137,20 +199,81 @@ button:disabled {
 
 .todo-list__item {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
   padding: 0.85rem 0.95rem;
   border: 1px solid rgba(24, 33, 47, 0.09);
   border-radius: 6px;
   background: #f8fafc;
+}
 
-  span {
-    overflow-wrap: anywhere;
+.todo-list__item.is-complete {
+  opacity: 0.74;
+
+  .todo-title {
+    text-decoration: line-through;
   }
 }
 
+.complete-checkbox {
+  width: 1.2rem;
+  min-height: 1.2rem;
+}
+
+.todo-content {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.todo-title {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #18212f;
+  font-weight: 800;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.todo-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  color: #59718c;
+  font-size: 0.88rem;
+
+  select {
+    width: auto;
+    min-height: 2rem;
+    padding: 0 0.55rem;
+    font-size: 0.85rem;
+  }
+}
+
+.edit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.65rem;
+}
+
+.secondary-button {
+  min-width: 4.75rem;
+  background: #31506f;
+}
+
+.ghost-button {
+  min-width: 4.75rem;
+  border: 1px solid #c8d2dd;
+  background: #ffffff;
+  color: #31506f;
+}
+
 .delete-button {
+  min-width: 5rem;
   background: #d92d20;
 }
 
@@ -163,8 +286,19 @@ button:disabled {
     padding: 1.25rem;
   }
 
+  .todo-panel__header,
+  .stats {
+    justify-content: flex-start;
+  }
+
   .todo-form__row,
-  .todo-list__item {
+  .todo-form__meta,
+  .todo-list__item,
+  .edit-row {
     grid-template-columns: 1fr;
+  }
+
+  .todo-form__row {
+    row-gap: 0.9rem;
   }
 }

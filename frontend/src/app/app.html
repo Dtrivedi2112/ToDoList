@@ -2,10 +2,13 @@
   <section class="todo-panel" aria-labelledby="todo-heading">
     <header class="todo-panel__header">
       <div>
-        <p class="eyebrow">In-memory task list</p>
+        <p class="eyebrow">Create your task list</p>
         <h1 id="todo-heading">TODO List</h1>
       </div>
-      <span class="count" aria-label="Todo count">{{ remainingCount() }}</span>
+      <div class="stats" aria-label="Todo summary">
+        <span><strong>{{ activeCount() }}</strong> active</span>
+        <span><strong>{{ completedCount() }}</strong> done</span>
+      </div>
     </header>
 
     <form class="todo-form" (ngSubmit)="addTodo()">
@@ -21,25 +24,109 @@
           [ngModel]="newTodoTitle()"
           (ngModelChange)="newTodoTitle.set($event)"
         />
-        <button type="submit" [disabled]="isSaving() || !newTodoTitle().trim()">
+        <button class="add-button" type="submit" [disabled]="isSaving() || !newTodoTitle().trim()">
           {{ isSaving() ? 'Adding...' : 'Add' }}
         </button>
       </div>
+      <div class="todo-form__meta">
+        <label>
+          Priority
+          <select
+            name="newTodoPriority"
+            [ngModel]="newTodoPriority()"
+            (ngModelChange)="newTodoPriority.set($event)">
+            @for (priority of priorities; track priority) {
+              <option [value]="priority">{{ priority }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Due date
+          <input
+            name="newTodoDueDate"
+            type="date"
+            [ngModel]="newTodoDueDate()"
+            (ngModelChange)="newTodoDueDate.set($event)"
+          />
+        </label>
+      </div>
     </form>
+
+    <div class="filters" role="tablist" aria-label="Todo filters">
+      @for (filter of filters; track filter.value) {
+        <button
+          type="button"
+          role="tab"
+          [class.is-active]="activeFilter() === filter.value"
+          [attr.aria-selected]="activeFilter() === filter.value"
+          (click)="setFilter(filter.value)">
+          {{ filter.label }}
+        </button>
+      }
+    </div>
 
     @if (errorMessage()) {
       <p class="message message--error" role="alert">{{ errorMessage() }}</p>
     }
 
+    @if (undoTodo()) {
+      <p class="undo-message">
+        Deleted "{{ undoTodo()?.title }}".
+        <button type="button" (click)="undoDelete()">Undo</button>
+      </p>
+    }
+
     @if (isLoading()) {
       <p class="message">Loading todos...</p>
-    } @else if (todos().length === 0) {
-      <p class="empty-state">No todos yet. Add your first item above.</p>
+    } @else if (filteredTodos().length === 0) {
+      <p class="empty-state">No todos match this view.</p>
     } @else {
       <ul class="todo-list">
-        @for (todo of todos(); track trackById($index, todo)) {
-          <li class="todo-list__item">
-            <span>{{ todo.title }}</span>
+        @for (todo of filteredTodos(); track trackById($index, todo)) {
+          <li class="todo-list__item" [class.is-complete]="todo.isCompleted">
+            <input
+              class="complete-checkbox"
+              type="checkbox"
+              [checked]="todo.isCompleted"
+              (change)="toggleCompleted(todo)"
+              aria-label="Mark {{ todo.title }} as complete"
+            />
+
+            <div class="todo-content">
+              @if (editingTodoId() === todo.id) {
+                <div class="edit-row">
+                  <input
+                    name="editTitle-{{ todo.id }}"
+                    type="text"
+                    maxlength="200"
+                    [ngModel]="editingTitle()"
+                    (ngModelChange)="editingTitle.set($event)"
+                    (keydown.enter)="saveEdit(todo)"
+                    (keydown.escape)="cancelEdit()"
+                  />
+                  <button type="button" class="secondary-button" (click)="saveEdit(todo)">Save</button>
+                  <button type="button" class="ghost-button" (click)="cancelEdit()">Cancel</button>
+                </div>
+              } @else {
+                <button type="button" class="todo-title" (click)="startEditing(todo)">
+                  {{ todo.title }}
+                </button>
+              }
+
+              <div class="todo-meta">
+                <select
+                  name="priority-{{ todo.id }}"
+                  [ngModel]="todo.priority"
+                  (ngModelChange)="changePriority(todo, $event)"
+                  aria-label="Priority for {{ todo.title }}">
+                  @for (priority of priorities; track priority) {
+                    <option [value]="priority">{{ priority }}</option>
+                  }
+                </select>
+                <span>{{ formatDueDate(todo.dueDate) }}</span>
+              </div>
+            </div>
+
             <button type="button" class="delete-button" (click)="deleteTodo(todo)" aria-label="Delete {{ todo.title }}">
               Delete
             </button>

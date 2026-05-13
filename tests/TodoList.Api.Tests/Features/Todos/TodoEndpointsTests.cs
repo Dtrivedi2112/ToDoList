@@ -17,13 +17,15 @@ public sealed class TodoEndpointsTests : IClassFixture<WebApplicationFactory<Pro
     [Fact]
     public async Task Post_creates_todo_and_get_returns_it()
     {
-        var createResponse = await _client.PostAsJsonAsync("/api/todos", new CreateTodoRequest("  Feed sourdough  "));
+        var createResponse = await _client.PostAsJsonAsync("/api/todos", new CreateTodoRequest("  Buy sourdough  ", "High"));
 
         Assert.Equal(HttpStatusCode.Created, createResponse.StatusCode);
 
         var created = await createResponse.Content.ReadFromJsonAsync<TodoItemResponse>();
         Assert.NotNull(created);
-        Assert.Equal("Feed sourdough", created.Title);
+        Assert.Equal("Buy sourdough", created.Title);
+        Assert.Equal("High", created.Priority);
+        Assert.False(created.IsCompleted);
 
         var todos = await _client.GetFromJsonAsync<TodoItemResponse[]>("/api/todos");
 
@@ -47,5 +49,24 @@ public sealed class TodoEndpointsTests : IClassFixture<WebApplicationFactory<Pro
         var deleteResponse = await _client.DeleteAsync($"/api/todos/{created!.Id}");
 
         Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task Put_updates_existing_todo()
+    {
+        var createResponse = await _client.PostAsJsonAsync("/api/todos", new CreateTodoRequest("Update me"));
+        var created = await createResponse.Content.ReadFromJsonAsync<TodoItemResponse>();
+
+        var updateResponse = await _client.PutAsJsonAsync(
+            $"/api/todos/{created!.Id}",
+            new UpdateTodoRequest("Updated title", true, "Low", null));
+
+        Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
+
+        var updated = await updateResponse.Content.ReadFromJsonAsync<TodoItemResponse>();
+        Assert.NotNull(updated);
+        Assert.Equal("Updated title", updated.Title);
+        Assert.True(updated.IsCompleted);
+        Assert.Equal("Low", updated.Priority);
     }
 }

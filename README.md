@@ -47,8 +47,18 @@ npm run build
 ## API endpoints
 
 - `GET /api/todos` returns the current TODO list.
-- `POST /api/todos` accepts `{ "title": "..." }` and creates a TODO item.
+- `POST /api/todos` accepts `{ "title": "...", "priority": "Medium", "dueDate": null }` and creates a TODO item.
+- `PUT /api/todos/{id}` updates title, completion status, priority, or due date.
 - `DELETE /api/todos/{id}` deletes an existing TODO item.
+
+## Features
+
+- Add and delete TODO items.
+- Mark items complete.
+- Inline edit item titles.
+- Filter by all, active, or completed.
+- Set priority and optional due date.
+- Undo the most recent delete.
 
 ## Notes
 
