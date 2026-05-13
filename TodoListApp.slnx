@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/TodoList.Api/TodoList.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TodoList.Api.Tests/TodoList.Api.Tests.csproj" />
+  </Folder>
+</Solution>

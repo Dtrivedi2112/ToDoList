@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/.angular/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+*.user
+*.suo
+*.log

@@ -1,0 +1,51 @@
+<main class="shell">
+  <section class="todo-panel" aria-labelledby="todo-heading">
+    <header class="todo-panel__header">
+      <div>
+        <p class="eyebrow">In-memory task list</p>
+        <h1 id="todo-heading">TODO List</h1>
+      </div>
+      <span class="count" aria-label="Todo count">{{ remainingCount() }}</span>
+    </header>
+
+    <form class="todo-form" (ngSubmit)="addTodo()">
+      <label for="todo-title">New todo</label>
+      <div class="todo-form__row">
+        <input
+          id="todo-title"
+          name="todoTitle"
+          type="text"
+          maxlength="200"
+          autocomplete="off"
+          placeholder="Add a task"
+          [ngModel]="newTodoTitle()"
+          (ngModelChange)="newTodoTitle.set($event)"
+        />
+        <button type="submit" [disabled]="isSaving() || !newTodoTitle().trim()">
+          {{ isSaving() ? 'Adding...' : 'Add' }}
+        </button>
+      </div>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="message message--error" role="alert">{{ errorMessage() }}</p>
+    }
+
+    @if (isLoading()) {
+      <p class="message">Loading todos...</p>
+    } @else if (todos().length === 0) {
+      <p class="empty-state">No todos yet. Add your first item above.</p>
+    } @else {
+      <ul class="todo-list">
+        @for (todo of todos(); track trackById($index, todo)) {
+          <li class="todo-list__item">
+            <span>{{ todo.title }}</span>
+            <button type="button" class="delete-button" (click)="deleteTodo(todo)" aria-label="Delete {{ todo.title }}">
+              Delete
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</main>

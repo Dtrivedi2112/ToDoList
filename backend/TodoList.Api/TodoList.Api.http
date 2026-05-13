@@ -1,0 +1,15 @@
+@TodoList.Api_HostAddress = http://localhost:5227
+
+GET {{TodoList.Api_HostAddress}}/api/todos
+Accept: application/json
+
+###
+
+POST {{TodoList.Api_HostAddress}}/api/todos
+Content-Type: application/json
+
+{
+  "title": "Try the TODO app"
+}
+
+###
