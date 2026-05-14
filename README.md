@@ -1,6 +1,7 @@
 # TODO List App
 
 Simple full-stack TODO list application built with Angular 21 and .NET 10 Web API. The API stores TODO items in memory for the life of the process.
+<img width="3189" height="1611" alt="image" src="https://github.com/user-attachments/assets/419cfcfe-f573-4118-94a9-04d3dd856fb4" />
 
 ## Tech stack
 
